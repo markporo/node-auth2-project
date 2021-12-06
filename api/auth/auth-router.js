@@ -57,24 +57,34 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
     }
    */
 
-  let { username, password } = req.body;
-  usersModel.findBy({ username })
-    .first()
-    .then(user => {
-      // bcrypt line - if (user and bcyrpt.compareSync(password, user, password))
-      const token = generateToken(user);
-      if (user && bcrypt.compareSync(password, user.password)) {
-        res.status(200).json({
-          "message": `${user.username} is back!`,
-          token,
-        })
-      } else {
-        res.status(401).json({ message: 'Invalid Credentials' });
-      }
+  // let { username, password } = req.body;
+  // usersModel.findBy({ username: username })
+  //   .first()
+  //   .then(user => {
+  //     // bcrypt line - if (user and bcyrpt.compareSync(password, user, password))
+  //     const token = generateToken(user);
+  //     if (user && bcrypt.compareSync(password, user.password)) {
+  //       res.status(200).json({
+  //         "message": `${user.username} is back!`,
+  //         token,
+  //       })
+  //     } else {
+  //       res.status(401).json({ message: 'Invalid Credentials' });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     res.status(500).json(error);
+  //   })
+
+  if (bcrypt.compareSync(req.body.password, req.user.password)) {
+    const token = generateToken(req.user);
+    res.status(200).json({
+      "message": `${req.user.username} is back!`,
+      token,
     })
-    .catch(error => {
-      res.status(500).json(error);
-    })
+  } else {
+    res.status(401).json({ message: 'Invalid Credentials' });
+  }
 });
 
 function generateToken(user) {
