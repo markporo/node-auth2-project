@@ -18,6 +18,10 @@ function find() {
       }
     ]
    */
+  return db('users as us')
+    .join('roles as r', 'us.role_id', '=', 'r.role_id')
+    .select('us.user_id', 'us.username', 'r.role_name')
+    .orderBy('us.user_id', 'asc')
 }
 
 function findBy(filter) {
@@ -34,9 +38,15 @@ function findBy(filter) {
       }
     ]
    */
+  return db('users as us')
+    .join('roles as r', 'us.role_id', '=', 'r.role_id')
+    .select('us.user_id', 'us.username', 'us.password', 'r.role_name')
+    .where(filter)
+    .orderBy('us.user_id', 'asc')
+
 }
 
-function findById(user_id) {
+async function findById(user_id) {
   /**
     You will need to join two tables.
     Resolves to the user with the given user_id.
@@ -47,6 +57,13 @@ function findById(user_id) {
       "role_name": "instructor"
     }
    */
+  const user = await db('users as us')
+    .join('roles as r', 'us.role_id', '=', 'r.role_id')
+    .select('us.user_id', 'us.username', 'r.role_name')
+    .where('us.user_id', user_id)
+    .first()
+
+  return user
 }
 
 /**
