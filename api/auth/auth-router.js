@@ -25,7 +25,7 @@ router.post("/register", validateRoleName, (req, res, next) => {
   //assign hash of password to the user's password
   //req.body.password = hash;
 
-  usersModel.add({ username: req.body.username.trim(), password: hash, role_name: req.body.role_name })
+  usersModel.add({ username: req.body.username, password: hash, role_name: req.body.role_name })
     .then(newUser => {
       res.status(201).json(newUser)
     })
@@ -83,7 +83,7 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
       token,
     })
   } else {
-    res.status(401).json({ message: 'Invalid Credentials' });
+    res.status(401).json({ "message": 'Invalid Credentials' });
   }
 });
 
@@ -95,13 +95,13 @@ function generateToken(user) {
     //...other data put here --never any sensitive information because
     //this token can be easily translated
   }
-  const secret = JWT_SECRET  //'this sectret is how we sign the token only the server knows it';
+  //const secret = JWT_SECRET  //'this sectret is how we sign the token only the server knows it';
   const options = {
-    expiresIn: '24h', //1d
+    expiresIn: '1d', //1d
     // we can use many other options if we want
   }
 
-  return jwt.sign(payload, secret, options)
+  return jwt.sign(payload, JWT_SECRET, options)
 }
 
 module.exports = router;

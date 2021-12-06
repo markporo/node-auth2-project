@@ -43,7 +43,11 @@ const only = role_name => (req, res, next) => {
 
     Pull the decoded token from the req object, to avoid verifying it again!
   */
-  next()
+  if (role_name === req.decodedToken.role_name) {
+    next()
+  } else {
+    res.status(403).json({ "message": "This is not for you" })
+  }
 }
 
 
@@ -65,7 +69,7 @@ const checkUsernameExists = async (req, res, next) => {
     try {
       const [user] = await usersModel.findBy({ username: req.body.username })
       if (!user) {
-        res.status(422).json({ "message": "Invalid credentials" })
+        res.status(401).json({ "message": "Invalid credentials" })
       } else {
         req.user = user; // this way we already have the the pasword on the 
         //request object when it comes time to compare it
