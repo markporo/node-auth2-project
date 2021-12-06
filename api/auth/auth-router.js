@@ -20,7 +20,18 @@ router.post("/register", validateRoleName, (req, res, next) => {
     }
    */
 
+  // hash password!
+  const hash = bcrypt.hashSync(req.body.password, 8)
+  //assign hash of password to the user's password
+  //req.body.password = hash;
 
+  usersModel.add({ username: req.body.username.trim(), password: hash, role_name: req.body.role_name })
+    .then(newUser => {
+      res.status(201).json(newUser)
+    })
+    .catch(() => {
+      res.status(500).json({ message: "The User could not be added to the DB." })
+    })
 
 });
 
