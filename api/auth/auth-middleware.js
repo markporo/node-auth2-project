@@ -42,7 +42,15 @@ const checkUsernameExists = (req, res, next) => {
       "message": "Invalid credentials"
     }
   */
-  next()
+  if (!req.body.username) {
+    res.status(401).json({ "message": "Invalid credentials" })
+  } else if (req.body.username === '') {
+    res.status(401).json({ "message": "Invalid credentials" })
+  } else if (typeof req.body.username !== "string") {
+    res.status(401).json({ "message": "Invalid credentials" })
+  } else {
+    next()
+  }
 }
 
 
